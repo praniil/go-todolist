@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"go-todoapp/models"
 	"log"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -72,6 +74,22 @@ func CreateTodolist(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func GetTodolisit(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	params := mux.Vars(r)
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		log.Fatalf("unable to convert string to int")
+	}
+	todolist, err := gettodolist(int64(id))
+	if err != nil {
+		log.Fatalf("unable to get todolist")
+	}
+	json.NewEncoder(w).Encode(todolist)
+}
+
 func inserttodolist(todolist models.TodoList) int64 {
 	db := Database_connection()
 	db.AutoMigrate(&models.TodoList{})
@@ -81,4 +99,18 @@ func inserttodolist(todolist models.TodoList) int64 {
 	}
 	fmt.Printf("inserted a single todos, %v", todolist.ID)
 	return todolist.ID
+}
+
+func gettodolist(id int64) (models.TodoList, error) {
+	db := Database_connection()
+	var todolist models.TodoList
+	result := db.First(&todolist, id)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		fmt.Println("no rows were returned")
+		return todolist, nil
+	} else if result.Error != nil {
+		log.Fatalf("unable to query todos, %v", result.Error)
+		return todolist, result.Error
+	}
+	return todolist, nil
 }
