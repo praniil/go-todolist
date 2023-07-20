@@ -72,13 +72,13 @@ func CreateTodolist(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func inserttodolist(todolist models.TodoList) int64{
+func inserttodolist(todolist models.TodoList) int64 {
 	db := Database_connection()
 	db.AutoMigrate(&models.TodoList{})
 	result := db.Create(&todolist)
-	if result.Error != nil{
+	if result.Error != nil {
 		panic(fmt.Sprintf("unable to create todolist"))
 	}
-	fmt.Printf("inserted a single todos, %v",todolist.ID)
+	fmt.Printf("inserted a single todos, %v", todolist.ID)
 	return todolist.ID
 }
