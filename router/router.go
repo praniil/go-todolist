@@ -11,5 +11,6 @@ import (
 func Router() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/api/newtodos", handler.CreateTodolist).Methods("POST", "OPTIONS")
+	router.HandleFunc("/api/gettodo/{id}", handler.GetTodolisit).Methods("GET", "OPTIONS")
 	return router
 }
