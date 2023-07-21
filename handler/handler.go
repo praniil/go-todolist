@@ -90,6 +90,25 @@ func GetTodolisit(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(todolist)
 }
 
+func UpdateTodolist(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var todolist models.TodoList
+	err := json.NewDecoder(r.Body).Decode(&todolist)
+	if err!= nil{
+		log.Fatalf("unable to decode request body, %v", err)
+	}
+	updatedRows := updatetodolist(todolist.ID, todolist)
+	msg := fmt.Sprintf("the numbers of updated todolist: %v", updatedRows)
+	res:= Response{
+		ID : todolist.ID,
+		Message : msg,
+	}
+	json.NewEncoder(w).Encode(res)
+}
 func inserttodolist(todolist models.TodoList) int64 {
 	db := Database_connection()
 	db.AutoMigrate(&models.TodoList{})
@@ -113,4 +132,15 @@ func gettodolist(id int64) (models.TodoList, error) {
 		return todolist, result.Error
 	}
 	return todolist, nil
+}
+
+func updatetodolist(id int64, todolist models.TodoList) int64{
+	db:= Database_connection()
+	result := db.Model(models.TodoList{}).Where("id =?", id).Updates(todolist)
+	if result.Error != nil{
+		log.Fatalf("unable to update todos, %v", result.Error)
+	}
+	rowsAffected := result.RowsAffected
+	log.Printf("no of rows affected: %v", rowsAffected)
+	return rowsAffected
 }
