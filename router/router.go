@@ -15,6 +15,6 @@ func Router() *mux.Router {
 	router.HandleFunc("/api/updatetodo", handler.UpdateTodolist).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/getalltodos", handler.GetAllTodolist).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/getalltodos", handler.GetAllTodolist).Methods("GET", "OPTIONS")
-	router.HandleFunc("/api/deletetodo/{id}", handler.GetAllTodolist).Methods("POST", "OPTIONS")
+	router.HandleFunc("/api/deletetodo/{id}", handler.DeleteTodolist).Methods("POST", "OPTIONS")
 	return router
 }
