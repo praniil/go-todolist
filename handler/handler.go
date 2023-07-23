@@ -121,26 +121,26 @@ func UpdateTodolist(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(res)
 }
 
-// func DeleteTodolist(w http.ResponseWriter, r *http.Request){
-// 	w.Header().Set("Content-type", "application/x-www-form-urlencoded")
-// 	w.Header().Set("Access-Control-Allow-Origin", "*")
-// 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
-// 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+func DeleteTodolist(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-// 	params := mux.Vars(r)
-// 	id, err := strconv.Atoi(params["id"])
-// 	if err!=nil{
-// 		log.Fatal("unable to convert string to int")
-// 	}
-// 	deletedRows := deletetodolist(int64(id))
-// 	msg := fmt.Sprintf("no of deleted rows:%%v", deletedRows)
-// 	res:= Response{
-// 		ID : int64(id),
-// 		Message: msg,
-// 	}
-// 	json.NewEncoder(w).Encode(res)
+	params := mux.Vars(r)
+	id, err := strconv.Atoi(params["id"])
+	if err!=nil{
+		log.Fatal("unable to convert string to int")
+	}
+	deletedRows := deletetodolist(int64(id))
+	msg := fmt.Sprintf("no of deleted rows:%%v", deletedRows)
+	res:= Response{
+		ID : int64(id),
+		Message: msg,
+	}
+	json.NewEncoder(w).Encode(res)
 
-// }
+}
 
 func inserttodolist(todolist models.TodoList) int64 {
 	db := Database_connection()
@@ -189,12 +189,12 @@ func updatetodolist(id int64, todolist models.TodoList) int64{
 	return rowsAffected
 }
 
-// func deletetodolist(id int64) int64{
-// 	db := Database_connection()
-// 	result := db.Delete(&models.TodoList{}, id)
-// 	if result.Error != nil{
-// 		log.Fatalf("unable to delete todolist, %v", result.Error)
-// 	}
-// 	rowsDeleted := result.RowsAffected
-// 	return rowsDeleted
-// }
+func deletetodolist(id int64) int64{
+	db := Database_connection()
+	result := db.Delete(&models.TodoList{}, id)
+	if result.Error != nil{
+		log.Fatalf("unable to delete todolist, %v", result.Error)
+	}
+	rowsDeleted := result.RowsAffected
+	return rowsDeleted
+}
