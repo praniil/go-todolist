@@ -90,18 +90,18 @@ func GetTodolisit(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(todolist)
 }
 
-func GetAllTodolist(w http.ResponseWriter, r *http.Request){
+func GetAllTodolist(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	todolist, err := getalltodolist()
-	if err != nil{
+	if err != nil {
 		log.Fatalf("unable to get todolists, %v", err)
 	}
 	json.NewEncoder(w).Encode(todolist)
 
 }
 
-func UpdateTodolist(w http.ResponseWriter, r *http.Request){
+func UpdateTodolist(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
@@ -109,19 +109,19 @@ func UpdateTodolist(w http.ResponseWriter, r *http.Request){
 
 	var todolist models.TodoList
 	err := json.NewDecoder(r.Body).Decode(&todolist)
-	if err!= nil{
+	if err != nil {
 		log.Fatalf("unable to decode request body, %v", err)
 	}
 	updatedRows := updatetodolist(todolist.ID, todolist)
 	msg := fmt.Sprintf("the numbers of updated todolist: %v", updatedRows)
-	res:= Response{
-		ID : todolist.ID,
-		Message : msg,
+	res := Response{
+		ID:      todolist.ID,
+		Message: msg,
 	}
 	json.NewEncoder(w).Encode(res)
 }
 
-func DeleteTodolist(w http.ResponseWriter, r *http.Request){
+func DeleteTodolist(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
@@ -129,13 +129,13 @@ func DeleteTodolist(w http.ResponseWriter, r *http.Request){
 
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
-	if err!=nil{
+	if err != nil {
 		log.Fatal("unable to convert string to int")
 	}
 	deletedRows := deletetodolist(int64(id))
 	msg := fmt.Sprintf("no of deleted rows:%%v", deletedRows)
-	res:= Response{
-		ID : int64(id),
+	res := Response{
+		ID:      int64(id),
 		Message: msg,
 	}
 	json.NewEncoder(w).Encode(res)
@@ -167,21 +167,21 @@ func gettodolist(id int64) (models.TodoList, error) {
 	return todolist, nil
 }
 
-func getalltodolist() ([]models.TodoList, error){
-	db:= Database_connection()
+func getalltodolist() ([]models.TodoList, error) {
+	db := Database_connection()
 	var todolists []models.TodoList
 	result := db.Find(&todolists)
-	if result.Error!=nil{
+	if result.Error != nil {
 		log.Fatalf("unable to find todolist, %v", result.Error)
 		return todolists, result.Error
 	}
 	return todolists, nil
 }
 
-func updatetodolist(id int64, todolist models.TodoList) int64{
-	db:= Database_connection()
+func updatetodolist(id int64, todolist models.TodoList) int64 {
+	db := Database_connection()
 	result := db.Model(models.TodoList{}).Where("id =?", id).Updates(todolist)
-	if result.Error != nil{
+	if result.Error != nil {
 		log.Fatalf("unable to update todos, %v", result.Error)
 	}
 	rowsAffected := result.RowsAffected
@@ -189,10 +189,10 @@ func updatetodolist(id int64, todolist models.TodoList) int64{
 	return rowsAffected
 }
 
-func deletetodolist(id int64) int64{
+func deletetodolist(id int64) int64 {
 	db := Database_connection()
 	result := db.Delete(&models.TodoList{}, id)
-	if result.Error != nil{
+	if result.Error != nil {
 		log.Fatalf("unable to delete todolist, %v", result.Error)
 	}
 	rowsDeleted := result.RowsAffected
