@@ -1,11 +1,14 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Box, List, ThemeIcon } from "@mantine/core";
+import { CheckCircleFillIcon } from "@primer/octicons-react";
+import useSWR from "swr";
+import "./App.css";
+import AddTodo from './components/AddTodo';
 
 function App() {
+
   return (
     <>
-    hello
+    <AddTodo/>
     </>
   );
 }
